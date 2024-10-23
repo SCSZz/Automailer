@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="image/logo.png">
+    <title>Automailer</title>
+    <style>
+        @font-face {
+            font-family: pop;
+            src: url('font/Poppins-Medium.ttf');
+        }
+        @font-face {
+            font-family: pop1;
+            src: url('font/Poppins-ExtraLightItalic.ttf');
+        }
+        * {
+            font-family: pop;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .w1 {
+            margin-left: 100px;
+            margin-right: 100px;
+        }
+        .v1 {
+            flex-direction: row;
+        }
+
+        button, #sub, #log {
+            background: black;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: pop;
+            border: none;
+            margin-left: 20px;
+        }
+
+        button:hover, #sub:hover, #log:hover {
+            background: rgb(169, 169, 169);
+        }
+
+        button:active, #sub:active, #log:active {
+            background: rgb(102, 102, 102);
+            color: black;
+        }
+
+        .hint {
+            font-family: pop1;
+            font-size: 15px;
+        }
+
+        .expandable-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .nested {
+            display: none;
+            margin-left: 20px;
+            text-decoration: none;
+        }
+
+        .toggle {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-button {
+            float: right; 
+            margin-top: 20px; 
+        }
+
+        .arrow-logo {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="w1">
+        <h2>Automailer</h2>
+        <form method="POST" action="/test_email"></form>
+        <div class="v1">
+            <label>Send a Mail:</label>
+            <input type="text" name="test_email" required placeholder="Enter your email">  
+            <input type="submit" id="sub" value="Test Email">
+        </div>
+        <p class="hint">Change your saved file into Content.msg. Now test your email content before sending it</p> 
+        </form>
+        <hr>
+        <br>
+        <form method="POST" action="/send_email">
+            <label>Select List:</label>
+            <select name="sheet_name">
+                {% for sheet in sheet_names %}
+                    <option value="{{ sheet }}">{{ sheet }}</option>
+                {% endfor %}
+            </select>
+            
+            <label>Select Field:</label>
+            <select name="field">
+                <option value="To">To</option>
+                <option value="Bcc">Bcc</option>
+            </select>
+            
+            <input type="submit" id="sub" value="Send Email">
+            <p class="hint">Choose your list and select "To" or "Bcc". Make sure the email from the ContactMaster.xlsx are correct. </p> 
+        </form>
+        <hr>
+        <br>
+
+        <form action="{{ url_for('view_record') }}" method="POST" target="_blank">
+            <label for="verification_code">View Record:</label>
+            <input type="password" name="verification_code" required> 
+            <button type="submit">Submit</button>
+        </form>
+        
+        <br>
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <div>
+            <h3 class="toggle">Questions & Answers</h3>
+            <ul class="expandable-list">
+                <li>
+                    <span class="toggle">Where do I find the Content.msg, MasterContact.xlsx? How do I use them?<span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>Content.msg is located at your C:\Automailer Content\</li>
+                        <li>MasterContact is located at the shared file C:\Automailer Content\</li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="toggle">Item 2 <span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>Sub-item 2.1</li>
+                        <li>Sub-item 2.2</li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="toggle">Item 3 <span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>Sub-item 3.1</li>
+                        <li>Sub-item 3.2</li>
+                        <li>Sub-item 3.3</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <br>
+
+        <form method="GET" action="/logout" class="logout-button">
+            <input type="submit" id="sub" value="Logout">
+        </form>
+        
+    </div>
+
+    <script>
+        document.querySelectorAll('.toggle').forEach(item => {
+            item.addEventListener('click', () => {
+                const nestedList = item.nextElementSibling;
+                if (nestedList.style.display === 'block') {
+                    nestedList.style.display = 'none'; // Collapse
+                } else {
+                    nestedList.style.display = 'block'; // Expand
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Automailer</title>
+    <style>
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", system-ui;
+            background-image: url('{{ url_for('static', filename='bg1.jpg') }}'); /* Replace with your image */
+            background-attachment: fixed; /* Fixes the background */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center; /* Center the background image */
+        }
+
+        .w1 {
+            margin-left: 100px;
+            margin-right: 100px;
+        }
+        .v1 {
+            flex-direction: row;
+        }
+
+        button, #sub, #log {
+            background: black;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: pop;
+            border: none;
+            margin-left: 20px;
+        }
+
+        #email-records {
+            width: 100%;
+            height: 200px;  /* Adjust height as needed */
+            overflow-y: scroll; /* Makes it scrollable */
+            border: 1px solid #ccc; /* Add a border for visibility */
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        button:hover, #sub:hover, #log:hover {
+            background: rgb(169, 169, 169);
+        }
+
+        button:active, #sub:active, #log:active {
+            background: rgb(199, 199, 199);
+            color: black;
+        }
+
+        .hint {
+            font-family: "Poppins", system-ui;
+            font-weight: 200;
+            font-style: italic;
+        }
+
+        .expandable-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .nested {
+            display: none;
+            margin-left: 20px;
+            text-decoration: none;
+            font-family: "Poppins", system-ui;
+            font-weight: 200;
+            font-style: italic;
+        }
+
+        .toggle {
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logout-button {
+            float: right; 
+            margin-top: 20px;
+            margin-bottom:40px;
+        }
+
+        .arrow-logo {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .logout {
+            font-size:20px;
+            width: 150px;
+            height:50px;
+        }
+
+        .b2 {
+            display:flex; }
+
+            button:disabled, #sub:disabled, #log:disabled {
+            background: grey; /* Set background to grey */
+            color: white;     /* Adjust text color for better visibility */
+            cursor: not-allowed; /* Change cursor to indicate disabled state */
+        }
+
+        .footer-content {
+            margin-top:70px;
+            margin-left:50px;
+            padding:10px;
+            line-height:0.1;
+        }
+
+        .page {
+            font-family: "Poppins", system-ui;
+            font-weight: 200;
+            font-style: italic;
+            color:#a0ac35
+        }
+
+    </style>  
+</head>
+<body>
+    <div class="w1">
+        <h1>Automailer</h1>
+        <br>
+        <form method="POST" action="/test_email">
+            <div class="v1">
+                <label>Send a Mail:</label>
+                <input type="text" name="test_email" required placeholder="Enter your email">
+                <input type="submit" id="sub" value="Test Email" {% if email_sending %}disabled{% endif %}>
+            </div>
+        </form>
+        <p class="hint">Change your saved file into Content.msg. Now test your email content before sending it</p> 
+        <br>
+        <hr>
+        <br>
+        
+        <form method="POST" action="/send_email">
+            <label>Select List:</label>
+            <select name="sheet_name">
+                {% for sheet in sheet_names %}
+                    <option value="{{ sheet }}">{{ sheet }}</option>
+                {% endfor %}
+            </select>
+        
+            <label>Select Field:</label>
+            <select name="field">
+                <option value="To">To</option>
+                <option value="Bcc">Bcc</option>
+            </select>
+        
+            <input type="submit" id="sub" value="Send Email" {% if email_sending %}disabled{% endif %}>
+            <p class="hint">Choose your list and select "To" or "Bcc". Make sure the email from the ContactMaster.xlsx are correct. </p>
+            <br>
+        </form>
+        
+        <div class="b2">
+            <form method="POST" action="/pause_email">
+                <input type="submit" id="sub" value="Pause Email">
+            </form>
+            
+            <form method="POST" action="/resume_email">
+                <input type="submit" id="sub" value="Resume Email">
+            </form>
+            
+            <form method="POST" action="/stop_email">
+                <input type="submit" id="sub" value="New Email">
+            </form>
+        </div>
+        <br>
+        <hr>
+        <h2>Email Sent Records</h2>
+        <div id="email-records-container">
+            <ul id="email-records">
+                {% for record in email_records %}
+                    <li>{{ record }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <form method="POST" action="/clear_email_records">
+            <input type="submit" id="sub" value="Clear Email Records">
+        </form>
+        <br>
+        <hr>
+        <br>
+
+        <form action="{{ url_for('view_record') }}" method="POST" target="_blank">
+            <label for="verification_code">View Record:</label>
+            <input type="password" name="verification_code" required> 
+            <button type="submit">Submit</button>
+        </form>
+        
+        <br>
+
+        {% with messages = get_flashed_messages() %} 
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+                <br>
+                <br>
+        <div>
+            <h2 class="toggle">Questions & Answers</h2>
+            <ul class="expandable-list">
+                <li>
+                    <span class="toggle">What is Automailer and how does it work?<span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>Automailer is an Auto-sending-email system which allows to send 10 rows of email inside MasterContact's Bcc / To Column. Every 10 rows sent will active a 10 minutes cooldown.</li>
+                        <li>You need to have the Content.msg ready for the system to be able to start.</li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="toggle">Where do I find the Content.msg, MasterContact.xlsx? How do I use them?<span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>Content.msg is located at your C:\Automailer Content\ . Saved mail file must be named as Content.msg before sending.</li>
+                        <li>MasterContact is located at the shared file Z:\ . To send a Bcc email, make sure the Bcc column is filled with the email. Same as "To"</li>
+                    </ul>
+                </li>
+                <li>
+                    <span class="toggle">How do I know when the email is sending or stop sending? <span class="arrow-logo">></span></span>
+                    <ul class="nested">
+                        <li>The textbox will shown each sent email. The test and send email button will be locked, it will only unlock once "New Email" button is clicked. "New Email button will stop process either it is finish or not</li>
+                        <li>If the program suddenly closed, make sure to check the Outlook to see which email is last sent, remove the sent email and copy paste the rest on the "Others" in MasterContact.xlsx, select "Others" and continue sending.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <br>
+
+        <form method="GET" action="/logout" class="logout-button">
+            <input type="submit" class="logout" id="sub" value="Logout">
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <img style="width:100px;height:80px;margin-top:40px;" src="{{ url_for('static', filename='images/logo1.png') }}" alt="Lenchong Metal Works">
+          <p> &copy; 2024 Lenchong Metal Work SDN. BHD.</p>
+          <p class="page">www.lenchong.com</p>
+        </div>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.toggle').forEach(item => {
+            item.addEventListener('click', () => {
+                const nestedList = item.nextElementSibling;
+                if (nestedList.style.display === 'block') {
+                    nestedList.style.display = 'none'; // Collapse
+                } else {
+                    nestedList.style.display = 'block'; // Expand
+                }
+            });
+        });
+
+         // Function to fetch and update the email records every 5 seconds
+        function refreshEmailRecords() {
+            fetch('/get_email_records')
+                .then(response => response.json())
+                .then(data => {
+                    const emailRecordsList = document.getElementById('email-records');
+                    emailRecordsList.innerHTML = ''; // Clear the current records
+
+                    // Add each email record to the list
+                    data.forEach(record => {
+                        const li = document.createElement('li');
+                        li.textContent = record;
+                        emailRecordsList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching email records:', error));
+        }
+
+        // Refresh the records every 5 seconds
+        setInterval(refreshEmailRecords, 5000);
+    </script>
+</body>
+</html>

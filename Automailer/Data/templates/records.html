@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>Login Records</title>
+    <style>
+        Body {
+            font-family: "Poppins", system-ui;
+            margin:0;
+            padding:0;
+            text-align: center;
+        }
+        #delete {
+            margin-top:50px;
+            width:180px;
+            height:30px;
+            border-radius:20px;
+            background: #000000;
+            color: white;
+            border:none;
+        }
+
+        #delete:hover{
+            background: rgb(169, 169, 169);
+        }
+
+        #delete:active{
+            background: rgb(199, 199, 199);
+            color: black;
+        }
+        h1 {
+            margin-top:50px;
+            margin-bottom:20px;
+        }
+
+        li {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            }
+    </style>
+</head>
+<body>
+    <h1>Login & Logout Records</h1>
+    <ul>
+        {% for record in records %}
+            <li>{{ record }}</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="/delete_records">
+        <input type="submit" id="delete" value="Delete All Records">
+    </form>
+</body>
+</html>

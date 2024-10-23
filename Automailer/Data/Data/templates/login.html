@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="image/logo.png">
+    <title>Login</title>
+    <style>
+        @font-face{font-family:pop;src:url('font/Poppins-Medium.ttf')}
+        *{
+            font-family:pop;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-position: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: solid 1px white;
+            border: 1px solid rgba(193, 193, 193, 0.991);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            height: 35px;
+            margin: 10px 0;
+            border: 1px solid rgba(193, 193, 193, 0.991);
+            border-radius: 50px;
+            font-size: 16px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            background:rgba(255, 255, 255, 0.1);
+        }
+
+        ::placeholder
+        {
+            color:rgba(193, 193, 193, 0.991);
+            font-weight:lighter;
+        }
+
+        input[type="submit"] {
+            width: 70%;
+            height: 40px;
+            background-color: #000000;
+            font-weight:bold;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition-duration: 0.5s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #484848;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img style="width:100px;height:80px;" src="image/logo1.png">
+        <form method="POST" action="/login">
+            <input type="text" name="username" placeholder="Username"><br>
+            <input type="password" name="password" placeholder=" Password"><br>
+            <input type="submit" value="Login">
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+Once the terminal is open *Do not close it while using the webpage*
+
+Click "Run_Email.bat" 
+
+Ctrl + click on the host link

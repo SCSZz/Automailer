@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Records</title>
+</head>
+<body>
+    <h2>Login & Logout Records</h2>
+    <ul>
+        {% for record in records %}
+            <li>{{ record }}</li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="/delete_records">
+        <input type="submit" value="Delete All Records">
+    </form>
+</body>
+</html>
